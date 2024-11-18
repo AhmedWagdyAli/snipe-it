@@ -34,6 +34,8 @@ class AssetMaintenance extends Model implements ICompanyableChild
         'completion_date'        => 'date_format:Y-m-d|nullable',
         'notes'                  => 'string|nullable',
         'cost'                   => 'numeric|nullable',
+        'priority_id'       => 'nullable|exists:priority,id',
+        'failure_type_id' => 'nullable|exists:failure_types,id',
     ];
 
 
@@ -53,6 +55,8 @@ class AssetMaintenance extends Model implements ICompanyableChild
         'asset_maintenance_time',
         'notes',
         'cost',
+        'priority_id',
+        'failure_type_id'
     ];
 
     use Searchable;
@@ -63,14 +67,14 @@ class AssetMaintenance extends Model implements ICompanyableChild
      * @var array
      */
     protected $searchableAttributes =
-        [
-            'title',
-            'notes',
-            'asset_maintenance_type',
-            'cost',
-            'start_date',
-            'completion_date'
-        ];
+    [
+        'title',
+        'notes',
+        'asset_maintenance_type',
+        'cost',
+        'start_date',
+        'completion_date'
+    ];
 
     /**
      * The relations and their attributes that should be included when searching the model.
@@ -83,6 +87,11 @@ class AssetMaintenance extends Model implements ICompanyableChild
         'asset.supplier' => ['name'],
         'asset.assetstatus' => ['name'],
         'supplier' => ['name'],
+    ];
+
+    protected $with = [
+        'failureType',
+        'pirority',
     ];
 
     public function getCompanyableParents()
@@ -164,7 +173,15 @@ class AssetMaintenance extends Model implements ICompanyableChild
     public function asset()
     {
         return $this->belongsTo(\App\Models\Asset::class, 'asset_id')
-                    ->withTrashed();
+            ->withTrashed();
+    }
+    public function pirority()
+    {
+        return $this->belongsTo(\App\Models\Priority::class, 'pirority_id');
+    }
+    public function failureType()
+    {
+        return $this->belongsTo(\App\Models\FailureType::class, 'failure_type_id');
     }
 
     /**
@@ -183,7 +200,7 @@ class AssetMaintenance extends Model implements ICompanyableChild
     public function supplier()
     {
         return $this->belongsTo(\App\Models\Supplier::class, 'supplier_id')
-                    ->withTrashed();
+            ->withTrashed();
     }
 
     /**

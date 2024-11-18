@@ -88,6 +88,16 @@ use Carbon\Carbon;
           {{ $assetMaintenance->is_warranty ? trans('admin/asset_maintenances/message.warranty') : trans('admin/asset_maintenances/message.not_warranty') }}
         </div>
       </div>
+      <div class="row">
+        <div class="col-md-3 col-sm-3" style="padding-bottom: 10px; margin-left: 15px; word-wrap: break-word;">
+          <strong>{{ trans('admin/asset_maintenances/form.cost') }}: </strong>
+          {{$assetMaintenance?->failureType?->name}}
+        </div>
+        <div class="col-md-3 col-sm-3" style="padding-bottom: 10px; margin-left: 15px; word-wrap: break-word;">
+          <strong>{{ trans('admin/asset_maintenances/form.is_warranty') }}: </strong>
+          {{ $assetMaintenance->pirority->name}}
+        </div>
+      </div>
       <!-- 4th Row End -->
       <!-- 5th Row Begin -->
       <div class="row">

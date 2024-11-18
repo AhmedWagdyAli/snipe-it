@@ -20,8 +20,9 @@
   <div class="col-md-12">
     <div class="box box-default">
       <div class="box-body">
-
-          <table
+        
+{{--         {{dd(\App\Presenters\AssetMaintenancesPresenter::dataTableLayout())}}
+ --}}          <table
               data-columns="{{ \App\Presenters\AssetMaintenancesPresenter::dataTableLayout() }}"
               data-cookie-id-table="maintenancesTable"
               data-pagination="true"

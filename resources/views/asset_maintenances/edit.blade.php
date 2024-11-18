@@ -58,7 +58,27 @@
         @include ('partials.forms.edit.supplier-select', ['translated_name' => trans('general.supplier'), 'fieldname' => 'supplier_id', 'required' => 'true'])
         @include ('partials.forms.edit.maintenance_type')
 
-
+        <div class="form-group {{ $errors->has('pirority_id') ? ' has-error' : '' }}">
+          <label for="pirority_id" class="col-md-3 control-label">{{ trans('admin/asset_maintenances/form.prirorty_id') }}
+          </label>
+          <div class="col-md-7">
+              {{ Form::select('pirority_id',  $pirorities, old('pirority_id', $item->pirority_id), ['class'=>'select2', 'aria-label'=>'pirority_id', 'required' => Helper::checkIfRequired($item, 'pirority_id') ? true : '', 'style'=> 'width:100%;']) }}
+              {!! $errors->first('pirority_id', '<span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i> :message</span>') !!}
+          </div>
+      </div>
+      <div class="form-group {{ $errors->has('failure_type_id') ? ' has-error' : '' }}">
+        <label for="failure_type_id" class="col-md-3 control-label">{{ trans('admin/asset_maintenances/form.failure_type_id') }}</label>
+        <div class="col-md-7">
+            {{ Form::select('failure_type_id', $failureTypes, old('failure_type_id', $item->failure_type_id), [
+                'class' => 'select2', 
+                'aria-label' => 'failure_type_id', 
+                'required' => Helper::checkIfRequired($item, 'failure_type_id') ? true : '', 
+                'style' => 'width:100%;'
+            ]) }}
+            {!! $errors->first('failure_type_id', '<span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i> :message</span>') !!}
+        </div>
+    </div>
+    
 
         <!-- Start Date -->
         <div class="form-group {{ $errors->has('start_date') ? ' has-error' : '' }}">
@@ -100,7 +120,7 @@
           </div>
         </div>
 
-        <!-- Asset Maintenance Cost -->
+        <!-- Asset Maintenance Co st -->
         <div class="form-group {{ $errors->has('cost') ? ' has-error' : '' }}">
           <label for="cost" class="col-md-3 control-label">{{ trans('admin/asset_maintenances/form.cost') }}</label>
           <div class="col-md-2">

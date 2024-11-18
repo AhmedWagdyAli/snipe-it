@@ -29,12 +29,12 @@ class AssetMaintenancesController extends Controller
      * @version v1.0
      * @since [v1.8]
      */
-    public function index(Request $request) : JsonResponse | array
+    public function index(Request $request): JsonResponse | array
     {
         $this->authorize('view', Asset::class);
 
         $maintenances = AssetMaintenance::select('asset_maintenances.*')
-            ->with('asset', 'asset.model', 'asset.location', 'asset.defaultLoc', 'supplier', 'asset.company',  'asset.assetstatus', 'adminuser');
+            ->with('asset', 'asset.model', 'asset.location', 'asset.defaultLoc', 'supplier', 'asset.company',  'asset.assetstatus', 'adminuser', 'failureType', 'pirority');
 
         if ($request->filled('search')) {
             $maintenances = $maintenances->TextSearch($request->input('search'));
@@ -62,22 +62,24 @@ class AssetMaintenancesController extends Controller
         $limit = app('api_limit_value');
 
         $allowed_columns = [
-                                'id',
-                                'title',
-                                'asset_maintenance_time',
-                                'asset_maintenance_type',
-                                'cost',
-                                'start_date',
-                                'completion_date',
-                                'notes',
-                                'asset_tag',
-                                'asset_name',
-                                'serial',
-                                'created_by',
-                                'supplier',
-                                'is_warranty',
-                                'status_label',
-                            ];
+            'id',
+            'title',
+            'asset_maintenance_time',
+            'asset_maintenance_type',
+            'cost',
+            'start_date',
+            'completion_date',
+            'notes',
+            'asset_tag',
+            'asset_name',
+            'serial',
+            'created_by',
+            'supplier',
+            'is_warranty',
+            'status_label',
+            'failure_type_id',
+            'pirority'
+        ];
 
         $order = $request->input('order') === 'asc' ? 'asc' : 'desc';
         $sort = in_array($request->input('sort'), $allowed_columns) ? e($request->input('sort')) : 'created_at';
@@ -109,8 +111,6 @@ class AssetMaintenancesController extends Controller
         $total = $maintenances->count();
         $maintenances = $maintenances->skip($offset)->take($limit)->get();
         return (new AssetMaintenancesTransformer())->transformAssetMaintenances($maintenances, $total);
-
-
     }
 
 
@@ -122,7 +122,7 @@ class AssetMaintenancesController extends Controller
      * @version v1.0
      * @since [v1.8]
      */
-    public function store(Request $request) : JsonResponse
+    public function store(Request $request): JsonResponse
     {
         $this->authorize('update', Asset::class);
         // create a new model instance
@@ -133,11 +133,9 @@ class AssetMaintenancesController extends Controller
         // Was the asset maintenance created?
         if ($maintenance->save()) {
             return response()->json(Helper::formatStandardApiResponse('success', $maintenance, trans('admin/asset_maintenances/message.create.success')));
-
         }
 
         return response()->json(Helper::formatStandardApiResponse('error', null, $maintenance->getErrors()));
-
     }
 
     /**
@@ -149,7 +147,7 @@ class AssetMaintenancesController extends Controller
      * @version v1.0
      * @since [v4.0]
      */
-    public function update(Request $request, $id) : JsonResponse
+    public function update(Request $request, $id): JsonResponse
     {
         $this->authorize('update', Asset::class);
 
@@ -175,7 +173,6 @@ class AssetMaintenancesController extends Controller
         }
 
         return response()->json(Helper::formatStandardApiResponse('error', null, trans('general.item_not_found', ['item_type' => trans('admin/asset_maintenances/general.maintenance'), 'id' => $id])));
-
     }
 
     /**
@@ -186,7 +183,7 @@ class AssetMaintenancesController extends Controller
      * @version v1.0
      * @since [v4.0]
      */
-    public function destroy($assetMaintenanceId) : JsonResponse
+    public function destroy($assetMaintenanceId): JsonResponse
     {
         $this->authorize('update', Asset::class);
         // Check if the asset maintenance exists
@@ -196,8 +193,6 @@ class AssetMaintenancesController extends Controller
         $assetMaintenance->delete();
 
         return response()->json(Helper::formatStandardApiResponse('success', $assetMaintenance, trans('admin/asset_maintenances/message.delete.success')));
-
-
     }
 
     /**
@@ -208,7 +203,7 @@ class AssetMaintenancesController extends Controller
      * @version v1.0
      * @since [v4.0]
      */
-    public function show($assetMaintenanceId) : JsonResponse
+    public function show($assetMaintenanceId): JsonResponse
     {
         $this->authorize('view', Asset::class);
         $assetMaintenance = AssetMaintenance::findOrFail($assetMaintenanceId);
@@ -217,6 +212,5 @@ class AssetMaintenancesController extends Controller
         }
 
         return (new AssetMaintenancesTransformer())->transformAssetMaintenance($assetMaintenance);
-
     }
 }

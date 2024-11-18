@@ -508,7 +508,9 @@
         'depreciations',
         'fieldsets',
         'groups',
-        'kits'
+        'kits',
+        'pirority',
+        'failureType',
     ];
 
     for (var i in formatters) {
@@ -581,6 +583,9 @@
             return value;
         }
     }
+    
+
+
 
     function groupsFormatter(value) {
 
@@ -593,7 +598,7 @@
         }
     }
 
-
+    
 
     function changeLogFormatter(value) {
 
@@ -639,8 +644,14 @@
 
     }
 
+    function failureTypeLinkObjFormatter(value, row, index) {
+    return `<span>${row.failureType.name}</span>`;
+}
 
-    // Create a linked phone number in the table list
+function priorityLinkObjFormatter(value, row, index) {
+    return `<span class="badge badge-${row.pirority.id}">${row.pirority.name}</span>`;
+}
+
     function phoneFormatter(value) {
         if (value) {
             return  '<span style="white-space: nowrap;"><a href="tel:' + value + '" data-tooltip="true" title="{{ trans('general.call') }}"><x-icon type="phone" /> ' + value + '</a></span>';
